@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPass</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #d8f0ff;
+            padding: 15px 20px;
+        }
+        .logo img {
+            height: 150px;
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            display: flex;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background: white;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+        .login button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #007BFF;
+        }
+        .event-carousel {
+            background: navy;
+            padding: 50px;
+            text-align: center;
+        }
+        .event-slider img {
+            width: 280px;
+            height: 280px;
+            margin: 2px;
+            border-radius: 2px;
+        }
+        .eventos-proximos {
+            padding: 20px;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="EventPassLogo-removebg-preview.png" alt="EventPass Logo">
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Encontre seu evento">
+            <button>🔍</button>
+        </div>
+        <div class="login">
+            <button>Login</button>
+        </div>
+    </header>
+    
+    <section class="event-carousel">
+        <div class="event-slider">
+            <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp" alt="Journey Tour 2022">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTRebUv9-cbgZaylYdXWoMlwXzKpeyqvP5lA&s" alt="Foreigner Tour">
+            <img src="https://upload.wikimedia.org/wikipedia/pt/2/21/Bruno_Mars_-_Live_in_Brazil_-_Turnê.jpg" alt="Bruno Mars Brasil">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyPKQ06CiGAY2MQGzwNy5KkBVjF-gkvJTx0w&s" alt="Nickelback Tour">
+        </div>
+    </section>
+    
+    <section class="eventos-proximos">
+        <h2>Eventos Próximos</h2>
+        <!-- Espaço para futuros eventos -->
+    </section>
+</body>
+</html>
