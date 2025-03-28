@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EventPass Login</title>
+    <title>EventPass Cadastro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -33,9 +33,9 @@
         .container {
             background-color: navy;
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 15px;
             text-align: center;
-            width: 350px;
+            width: 380px;
         }
 
         h2 {
@@ -43,10 +43,18 @@
             margin-bottom: 15px;
         }
 
+        label {
+            color: white;
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
         input {
             width: 100%;
             padding: 10px;
-            margin: 8px 0;
+            margin-top: 5px;
             border-radius: 5px;
             border: none;
         }
@@ -61,56 +69,24 @@
             cursor: pointer;
             margin-top: 10px;
         }
-
-        .ou {
-            color: white;
-            margin: 15px 0;
-        }
-
-        label {
-            color: white;
-            display: block;
-            text-align: left;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-        .cadastro {
-            color: #4a90e2;
-            text-decoration: none;
-        }
-
-        .social-login {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .social-login img {
-            width: 40px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
     <div class="logo">
-        <img src="EventPassLogoLogin.png" alt="EventPass Logo">
+        <img src="EventPassLogoRegister.png" alt="EventPass Logo">
     </div>
     <div class="container">
-        <h2>ENTRE AGORA</h2>
+        <h2>CADASTRO</h2>
         <label for="email">Email</label>
         <input type="email" id="email" placeholder="Digite seu email">
         <label for="senha">Senha</label>
         <input type="password" id="senha" placeholder="Digite sua senha">
-        <button class="btn">ENTRAR</button>
-        <p class="ou">OU</p>
-        <a href="#" class="cadastro">CADASTRE - SE</a>
-        <p class="ou">Acesso rápido com</p>
-        <div class="social-login">
-            <img src="https://logopng.com.br/logos/google-37.png" alt="Google Login">
-            <img src="https://logopng.com.br/logos/facebook-13.png" alt="Facebook Login">
-        </div>
+        <label for="confirmarSenha">Confirmar Senha</label>
+        <input type="password" id="confirmarSenha" placeholder="Confirme sua senha">
+        <button class="btn">CADASTRAR</button>
     </div>
 </body>
 </html>
+
+
+
