@@ -6,6 +6,13 @@
     <title>Freedom Tour 2025 - Journey & Toto</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+        }
         body {
             background-color: navy;
             color: white;
@@ -15,14 +22,52 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #d8f0ff;
+            padding: 15px 20px;
+            width: 100%;
+            max-width: 100%;
+        }
+        .logo img {
+            height: 150px;
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin: 0 20px;
+            display: flex;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+        .search-bar button {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-left: none;
+            background: white;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+        .login button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #007BFF;
         }
         .banner-container {
             position: relative;
             width: 100%;
             height: 50vh;
             overflow: hidden;
+            max-width: 100%;
         }
         .banner-background {
             width: 100%;
@@ -49,7 +94,9 @@
             padding: 20px;
             border-radius: 10px;
             text-align: left;
+            align-items: center;
             margin-top: -30px;
+            box-sizing: border-box;
         }
         .info {
             max-width: 600px;
@@ -77,10 +124,23 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
+    <header>
+        <div class="logo">
+            <img src="EventPassLogo.png" alt="EventPass Logo">
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Encontre seu evento">
+            <button>🔍</button>
+        </div>
+        <div class="login">
+            <button>Login</button>
+        </div>
+    </header>
     <div class="banner-container">
         <img src="https://alphafm.com.br/wp-content/uploads/2024/09/biosite-anuncio-diadorock-journey-2504-ab-v1.webp" alt="background-show" class="banner-background">
         <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp" alt="banner-show" class="banner-overlay">
