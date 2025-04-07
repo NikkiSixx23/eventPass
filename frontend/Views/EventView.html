@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,13 @@
         * {
             box-sizing: border-box;
         }
-        html, body {
+
+        html,
+        body {
             width: 100%;
             overflow-x: hidden;
         }
+
         body {
             background-color: navy;
             color: white;
@@ -23,6 +27,7 @@
             flex-direction: column;
             align-items: center;
         }
+
         header {
             display: flex;
             justify-content: space-between;
@@ -32,14 +37,17 @@
             width: 100%;
             max-width: 100%;
         }
+
         .logo img {
             height: 150px;
         }
+
         .search-bar {
             flex-grow: 1;
             margin: 0 20px;
             display: flex;
         }
+
         .search-bar input {
             flex-grow: 1;
             padding: 10px;
@@ -47,6 +55,7 @@
             border-radius: 20px 0 0 20px;
             outline: none;
         }
+
         .search-bar button {
             padding: 10px 15px;
             border: 1px solid #ccc;
@@ -55,6 +64,7 @@
             border-radius: 0 20px 20px 0;
             cursor: pointer;
         }
+
         .login button {
             background: none;
             border: none;
@@ -62,6 +72,7 @@
             cursor: pointer;
             color: #007BFF;
         }
+
         .banner-container {
             position: relative;
             width: 100%;
@@ -69,6 +80,7 @@
             overflow: hidden;
             max-width: 100%;
         }
+
         .banner-background {
             width: 100%;
             height: 100%;
@@ -76,6 +88,7 @@
             display: block;
             opacity: 70%;
         }
+
         .banner-overlay {
             position: absolute;
             top: 50%;
@@ -87,6 +100,7 @@
             display: block;
             border-radius: 20px;
         }
+
         .info-container {
             background-color: navy;
             width: 100%;
@@ -98,24 +112,29 @@
             margin-top: -30px;
             box-sizing: border-box;
         }
+
         .info {
             max-width: 600px;
             margin: auto;
             margin-top: 50px;
         }
+
         .info h2 {
             font-size: 22px;
             margin-bottom: 10px;
             font-weight: bold;
         }
+
         .info p {
             font-size: 16px;
             margin: 8px 0;
         }
+
         .btn-container {
             text-align: center;
             margin-top: 50px;
         }
+
         .btn {
             width: 50%;
             padding: 10px;
@@ -128,22 +147,27 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <div class="logo">
-            <img src="EventPassLogo.png" alt="EventPass Logo">
+            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
             <input type="text" placeholder="Encontre seu evento">
             <button>🔍</button>
         </div>
         <div class="login">
+            <a href="LoginView.html">
             <button>Login</button>
+        </a>
         </div>
     </header>
     <div class="banner-container">
-        <img src="https://alphafm.com.br/wp-content/uploads/2024/09/biosite-anuncio-diadorock-journey-2504-ab-v1.webp" alt="background-show" class="banner-background">
-        <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp" alt="banner-show" class="banner-overlay">
+        <img src="https://alphafm.com.br/wp-content/uploads/2024/09/biosite-anuncio-diadorock-journey-2504-ab-v1.webp"
+            alt="background-show" class="banner-background">
+        <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp" alt="banner-show"
+            class="banner-overlay">
     </div>
     <div class="info-container">
         <div class="info">
@@ -151,11 +175,15 @@
             <p><strong>Apresentação:</strong> 02/08/2025 às 22h00</p>
             <p><strong>Abertura dos portões:</strong> 20h00</p>
             <p><strong>Local:</strong> Allianz Parque</p>
-            <p><strong>Parcelamento:</strong> Na internet até 10X com juros, sendo as 3 primeiras parcelas sem juros.</p>
-            <p><strong>Classificação:</strong> 16 anos. Menores de 16 anos somente acompanhados dos responsáveis legais.</p>
+            <p><strong>Parcelamento:</strong> Na internet até 10X com juros, sendo as 3 primeiras parcelas sem juros.
+            </p>
+            <p><strong>Classificação:</strong> 16 anos. Menores de 16 anos somente acompanhados dos responsáveis legais.
+            </p>
         </div>
         <div class="btn-container">
-            <button class="btn">INGRESSOS</button>
+            <a href="TicketsView.html">
+                <button class="btn">INGRESSOS</button>
+            </a>
         </div>
     </div>
 </body>
