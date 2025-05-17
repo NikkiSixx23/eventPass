@@ -1,5 +1,10 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,24 +98,28 @@
         }
     </style>
 </head>
+
 <body>
     <div class="logo">
         <img src="EventPassLogo.png" alt="EventPass Logo">
     </div>
-    <div class="container">
-        <h2>ENTRE AGORA</h2>
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Digite seu email">
-        <label for="senha">Senha</label>
-        <input type="password" id="senha" placeholder="Digite sua senha">
-        <button class="btn">ENTRAR</button>
-        <p class="ou">OU</p>
-        <a href="RegisterView.html" class="cadastro">CADASTRE - SE</a>
-        <p class="ou">Acesso rápido com</p>
-        <div class="social-login">
-            <img src="https://logopng.com.br/logos/google-37.png" alt="Google Login">
-            <img src="https://logopng.com.br/logos/facebook-13.png" alt="Facebook Login">
+    <form action="HomeView.php" method="POST">
+        <div class="container">
+            <h2>ENTRE AGORA</h2>
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Digite seu email">
+            <label for="senha">Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha">
+            <button class="btn">ENTRAR</button>
+            <p class="ou">OU</p>
+            <a href="RegisterView.php" class="cadastro">CADASTRE - SE</a>
+            <p class="ou">Acesso rápido com</p>
+            <div class="social-login">
+                <img src="https://logopng.com.br/logos/google-37.png" alt="Google Login">
+                <img src="https://logopng.com.br/logos/facebook-13.png" alt="Facebook Login">
+            </div>
         </div>
-    </div>
+    </form>
 </body>
+
 </html>

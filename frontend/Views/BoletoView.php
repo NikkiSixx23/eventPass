@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pagamento com Boleto</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <!--<link rel="stylesheet" href="Style.css">-->
   <style>
     * {
       box-sizing: border-box;
@@ -115,31 +117,36 @@
     }
   </style>
 </head>
+
 <body>
 
   <header>
     <div class="logo">
       <a href="HomeView.html">
-      <img src="EventPassLogo.png" alt="EventPass Logo">
-  </a>
-  </div>
+        <img src="EventPassLogo.png" alt="EventPass Logo">
+      </a>
+    </div>
     <div class="search-bar">
       <input type="text" placeholder="Encontre seu evento" />
       <button>🔍</button>
     </div>
     <div class="login">
       <a href="LoginView.html">
-      <button>Login</button>
-  </a>
+        <button>Login</button>
+      </a>
   </header>
 
   <h2>FORMA DE PAGAMENTO</h2>
 
   <div class="boleto-container">
-    <img class="boleto-logo" src="https://seeklogo.com/images/B/boleto-codigo-barra-preto-black-bar-code-ticket-logo-AB7B0F1776-seeklogo.com.png" alt="Boleto Logo" />
-    <img class="boleto-img" src="https://www.rtek.com.br/wp-content/uploads/2017/08/boletobancario.jpg" alt="Imagem do Boleto" />
+    <img class="boleto-logo"
+      src="https://seeklogo.com/images/B/boleto-codigo-barra-preto-black-bar-code-ticket-logo-AB7B0F1776-seeklogo.com.png"
+      alt="Boleto Logo" />
+    <img class="boleto-img" src="https://www.rtek.com.br/wp-content/uploads/2017/08/boletobancario.jpg"
+      alt="Imagem do Boleto" />
     <button class="baixar-btn">BAIXAR</button>
   </div>
 
 </body>
+
 </html>

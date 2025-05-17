@@ -1,7 +1,7 @@
 <?php
-    $database = 'ProjetoPhp';
+    $database = 'EventPassUpdate';
     $user = 'root';
-    $password = 'root';
+    $password = '1234';
     $host = 'localhost';
 
     $conexao = mysqli_connect($host, $user, $password, $database);
