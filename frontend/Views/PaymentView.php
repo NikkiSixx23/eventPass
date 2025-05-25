@@ -1,3 +1,58 @@
+<?php
+//importações
+include_once '../../backend/DataBase/conexaoDB.php';
+include_once '../../backend/Entities/Usuario.php';
+
+session_start();
+
+if (isset($_POST['qtdInteira']) && isset($_POST['qtdMeia'])) {
+    $_SESSION['qtdInteira'] = $_POST['qtdInteira'];
+    $_SESSION['qtdMeia'] = $_POST['qtdMeia'];
+}
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+
+    //testa se o usuário está logado com alguma conta.
+    if (!isset($_SESSION['user'])) {
+        //passa para a sessão a página e o evento que o usuário estava acessando.
+        $_SESSION['pagina'] = "PaymentView.php";
+        $_SESSION['evento'] = $id;
+        header("Location: LoginView.php");
+        exit;
+    } else if (isset($_SESSION['qtdInteira']) && isset($_SESSION['qtdMeia'])) {
+
+        if ($_SESSION['qtdInteira'] == 0 && $_SESSION['qtdMeia'] == 0) {
+            $_SESSION['msg'] = "Tem que comprar pelo menos um ingresso.";
+            header("Location: TicketsView.php?id=" . $id);
+        }
+
+        $consulta = mysqli_query($conexao, "SELECT * FROM Eventos WHERE id = $id");
+        $dados = mysqli_fetch_assoc($consulta);
+
+        if ($dados) {
+            // Dados do evento
+            $nome = $dados['nome'];
+            $local = $dados['local_evento'];
+            $data = new DateTime($dados['data_evento']);
+            $preco = $dados['preco_ingresso'];
+            $precoMeia = $dados['preco_ingresso'] / 2;
+            $logo = $dados['logo'];
+            $total = ($_SESSION['qtdInteira'] * $preco) + ($_SESSION['qtdMeia'] * $precoMeia);
+        } else {
+            echo "<p>Evento não encontrado.</p>";
+            exit;
+        }
+    } else {
+        echo "<p>Não foi passado corretamente os ingressos.</p>";
+        exit;
+    }
+} else {
+    echo "<p>ID do evento não fornecido.</p>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -124,37 +179,35 @@
 <body>
     <header>
         <div class="logo">
-            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
+            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Encontre seu evento">
-            <button>🔍</button>
+            <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+                <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+                <button type="submit">🔍</button>
+            </form>
         </div>
         <div class="login">
-            <a href="LoginView.html">
-            <button>Login</button>
-        </a>
+            <button onclick="window.location.href='Logout.php'">Logout</button>
+        </div>
     </header>
     <h2>PAGAMENTO</h2>
     <div class="container">
         <div class="evento">
-            <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp"
-                alt="Capa do evento">
+            <img src="<?php echo $logo; ?>" alt="Capa do evento">
             <div>
-                <p><strong>Journey & Toto - Freedom Tour 2025</strong></p>
-                <p>📍 Allianz Parque<br>São Paulo, 02/08/2025</p>
+                <p><strong><?php echo $nome; ?></strong></p>
+                <p>📍 <!--coloque aqui onde será o evento--><br><?php echo $local . ", " . $data->format("d/m/Y"); ?></p>
             </div>
         </div>
         <div class="resumo">
             <p><strong>Resumo</strong></p>
-            <p>2x Pista (inteira)</p>
-            <p>1x Pista (meia)</p>
+            <p><?php echo $_SESSION['qtdInteira']; ?>x Pista (inteira)</p>
+            <p><?php echo $_SESSION['qtdMeia'] ?>x Pista (meia)</p>
         </div>
         <hr>
-        <div class="total">Total: R$ 1000</div>
-        <a href="PaymentMethod.html">
-            <button class="btn-comprar">COMPRAR</button>
-        </a>
+        <div class="total">Total: R$ <?php echo $total; ?></div>
+        <button class="btn-comprar" onclick="window.location.href='PaymentMethod.php'">COMPRAR</button>
     </div>
 </body>
 

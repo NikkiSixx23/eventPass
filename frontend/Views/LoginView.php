@@ -9,6 +9,7 @@ session_start();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventPass Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -103,6 +104,14 @@ session_start();
     <div class="logo">
         <img src="EventPassLogo.png" alt="EventPass Logo">
     </div>
+
+    <?php if (isset($_SESSION['msg'])) { ?>
+        <div class="alert alert-danger text-center">
+            <?php echo $_SESSION['msg']; ?>
+        </div>
+    <?php session_destroy();
+    } ?>
+
     <form action="HomeView.php" method="POST">
         <div class="container">
             <h2>ENTRE AGORA</h2>
@@ -114,10 +123,10 @@ session_start();
             <p class="ou">OU</p>
             <a href="RegisterView.php" class="cadastro">CADASTRE - SE</a>
             <p class="ou">Acesso rápido com</p>
-            <div class="social-login">
+            <!--<div class="social-login">
                 <img src="https://logopng.com.br/logos/google-37.png" alt="Google Login">
                 <img src="https://logopng.com.br/logos/facebook-13.png" alt="Facebook Login">
-            </div>
+            </div>-->
         </div>
     </form>
 </body>

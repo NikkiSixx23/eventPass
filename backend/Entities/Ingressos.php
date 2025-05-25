@@ -4,7 +4,7 @@ class Ingressos {
     private string $evento_id;
     private string $usuario_id;
     private string $quantidade;
-    private string $data_compra;
+    private DateTime $data_compra;
     private string $tipo_ingresso;
     private string $processo_ingresso;
 
@@ -12,7 +12,7 @@ class Ingressos {
         string $evento_id,
         string $usuario_id,
         string $quantidade,
-        string $data_compra,
+        DateTime $data_compra,
         string $tipo_ingresso,
         string $processo_ingresso
     ) {
@@ -40,7 +40,7 @@ class Ingressos {
         return $this->quantidade;
     }
 
-    public function getDataCompra(): string {
+    public function getDataCompra(): DateTime {
         return $this->data_compra;
     }
 
@@ -64,7 +64,7 @@ class Ingressos {
         $this->quantidade = $quantidade;
     }
 
-    public function setDataCompra(string $data_compra): void {
+    public function setDataCompra(DateTime $data_compra): void {
         $this->data_compra = $data_compra;
     }
 

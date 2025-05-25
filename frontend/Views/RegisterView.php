@@ -3,8 +3,11 @@ include_once '../../backend/Database/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
 session_start();
 
-function validarCPF($cpf){
+function validarCPF($cpf) {
+    //pega apenas os caracteres numéricos do cpf
     $cpf = preg_replace('/[^0-9]/', '', $cpf);
+
+    //testa se o cpf tem 11 caracteres e se os caracteres não são repetidos. Ex: 11111111111
     if (strlen($cpf) != 11 || preg_match('/(\d)\1{10}/', $cpf)) return false;
     for ($t = 9; $t < 11; $t++) {
         $d = 0;
@@ -25,7 +28,7 @@ $msg = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['cpf'])) {
         $erros['cpf'] = "CPF é obrigatório.";
-    } elseif (!validarCPF($_POST['cpf'])) {
+    } else if (!validarCPF($_POST['cpf'])) {
         $erros['cpf'] = "CPF inválido.";
     };
     if (empty($_POST['nome'])) $erros['nome'] = "Nome é obrigatório.";
@@ -39,9 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (empty($erros)) {
-        $user = new Usuario($_POST['cpf'], $_POST['nome'], $_POST['dataNasc'], $_POST['email'], $_POST['senha']);
+        $_POST['cpf'] = preg_replace('/[^0-9]/', '', $_POST['cpf']);
+        $dataNasc = new DateTime($_POST['dataNasc']);
+        $user = new Usuario($_POST['cpf'], $_POST['nome'], $dataNasc, $_POST['email'], $_POST['senha']);
         $consulta = mysqli_query($conexao, "INSERT INTO usuarios (cpf, nome, dataNascimento, email, senha, perfil, telefone, endereco) VALUES
-        ('" . $user->getCpf() . "', '" . $user->getNome() . "', '" . $user->getDataNascimento() . "', '" . $user->getEmail() . "', '" . $user->getSenha() . "', '" . $user->getPerfil() . "', '" . $user->getTelefone() . "', '" . $user->getEndereco() . "')");
+        ('" . $user->getCpf() . "', '" . $user->getNome() . "', '" . $user->getDataNascimento()->format('Y-m-d') . "', '" . $user->getEmail() . "', '" . $user->getSenha() . "', '" . $user->getPerfil() . "', '" . $user->getTelefone() . "', '" . $user->getEndereco() . "')");
 
         if ($consulta) {
             $_SESSION['msg'] = "Usuário cadastrado com sucesso!!";
@@ -128,6 +133,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             cursor: pointer;
             margin-top: 20px;
         }
+
+        .cadastro {
+            color: #4a90e2;
+            text-decoration: none;
+        }
     </style>
 
     <!--ESTILO PARA MENSAGEM DE ALERTA-->
@@ -176,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if (isset($erros['cpf'])) echo "<div class='field-error'>{$erros['cpf']}</div>"; ?>
 
             <label for="dataNasc">Data de nascimento</label>
-            <input type="text" name="dataNasc" id="dataNasc" placeholder="Digite sua data de nascimento" value="<?php echo htmlspecialchars($_POST['dataNasc'] ?? ''); ?>">
+            <input type="date" name="dataNasc" id="dataNasc" placeholder="Digite sua data de nascimento" value="<?php echo htmlspecialchars($_POST['dataNasc'] ?? ''); ?>">
             <?php if (isset($erros['dataNasc'])) echo "<div class='field-error'>{$erros['dataNasc']}</div>"; ?>
 
             <label for="email">Email</label>
@@ -192,8 +202,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if (isset($erros['confirmarSenha'])) echo "<div class='field-error'>{$erros['confirmarSenha']}</div>"; ?>
 
             <button class="btn">CADASTRAR</button>
+            <a href="LoginView.php" class="cadastro">Já tenho cadastro</a>
         </div>
     </form>
 </body>
+
+<!--Mascara do CPF -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const cpfInput = document.getElementById('cpf');
+
+        cpfInput.addEventListener('input', function (e) {
+            let value = cpfInput.value.replace(/\D/g, '');
+
+            if (value.length > 11) value = value.slice(0, 11);
+
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+
+            cpfInput.value = value;
+        });
+    });
+</script>
 
 </html>

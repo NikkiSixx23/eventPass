@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -106,11 +110,13 @@
       <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
   </div>
     <div class="search-bar">
-      <input type="text" placeholder="Encontre seu evento" />
-      <button>🔍</button>
-    </div>
+            <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+                <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+                <button type="submit">🔍</button>
+            </form>
+        </div>
     <div class="login">
-      <a href="LoginView.html">
+      <a href="LoginView.php">
       <button>Login</button>
   </a>
   </header>

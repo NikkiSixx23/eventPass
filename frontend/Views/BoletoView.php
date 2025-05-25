@@ -1,3 +1,7 @@
+<?php
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -122,18 +126,24 @@
 
   <header>
     <div class="logo">
-      <a href="HomeView.html">
+      <a href="HomeView.php">
         <img src="EventPassLogo.png" alt="EventPass Logo">
       </a>
     </div>
     <div class="search-bar">
-      <input type="text" placeholder="Encontre seu evento" />
-      <button>🔍</button>
+      <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+        <input type="text" name="busca" placeholder="Encontre seu evento"
+          value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+        <button type="submit">🔍</button>
+      </form>
     </div>
     <div class="login">
-      <a href="LoginView.html">
-        <button>Login</button>
-      </a>
+      <?php if (isset($_SESSION['user'])) {
+        echo "<button onclick=\"window.location.href='Logout.php'\">Logout</button>";
+      } else {
+        echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
+      } ?>
+    </div>
   </header>
 
   <h2>FORMA DE PAGAMENTO</h2>
@@ -144,7 +154,7 @@
       alt="Boleto Logo" />
     <img class="boleto-img" src="https://www.rtek.com.br/wp-content/uploads/2017/08/boletobancario.jpg"
       alt="Imagem do Boleto" />
-    <button class="baixar-btn">BAIXAR</button>
+    <a href="boletos/boleto_exemplo.pdf" class="baixar-btn" download>BAIXAR</a>
   </div>
 
 </body>

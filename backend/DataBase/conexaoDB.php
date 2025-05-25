@@ -1,5 +1,5 @@
 <?php
-    $database = 'EventPassUpdate';
+    $database = 'EventPass';
     $user = 'root';
     $password = '1234';
     $host = 'localhost';

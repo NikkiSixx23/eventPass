@@ -4,13 +4,13 @@
         private String $perfil;
         private String $cpf;
         private String $nome;
-        private String $dataDeNascimento;
+        private DateTime $dataDeNascimento;
         private String $email;
         private String $senha;
         private String $telefone;
         private String $endereco;
 
-        public function __construct(String $cpf, String $nome, String $dataDeNascimento, String $email, String $senha, String $telefone = 'Não informado', String $endereco = 'Não informado', String $perfil = 'USUARIO') {
+        public function __construct(String $cpf, String $nome, DateTime $dataDeNascimento, String $email, String $senha, String $telefone = 'Não informado', String $endereco = 'Não informado', String $perfil = 'USUARIO') {
             $this->perfil = $perfil;
             $this->cpf = $cpf;
             $this->nome = $nome;
@@ -41,7 +41,7 @@
             return $this->nome;
         }
 
-        public function getDataNascimento(): String {
+        public function getDataNascimento(): DateTime {
             return $this->dataDeNascimento;
         }
 

@@ -1,36 +1,44 @@
 <?php
+//importações
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
 
 session_start();
 
 //testa se no login o usuario colocou email
-if (!empty($_POST['email'])) {
-    $email = $_POST['email'];
-    $senha = $_POST['senha'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST)) {
+    if (!empty($_POST['email'])) {
+        $email = $_POST['email'];
+        $senha = $_POST['senha'];
 
-    //faz um consulta no banco que retorna os dados do usuário específico
-    $consulta = mysqli_query($conexao, "select id, cpf, nome, email, dataNascimento, senha, perfil from Usuarios where email = '$email'");
-    $dados = mysqli_fetch_assoc($consulta);
-    
-    //instancia uma entidade usuário para conseguir realizar validação de senha e email
-    $user = null;
-    if ($dados != null) {
-        $user = new Usuario($dados['cpf'], $dados['nome'], $dados['dataNascimento'], $dados['email'], $dados['senha']);
-    }
+        //faz um consulta no banco que retorna os dados do usuário específico
+        $consulta = mysqli_query($conexao, "select id, cpf, nome, email, dataNascimento, senha, perfil from Usuarios where email = '$email'");
+        $dados = mysqli_fetch_assoc($consulta);
 
-    //realiza validação de email e senha para o usuário conseguir navegar no site
-    if ($user != null && $user->validaUsuario($email, $senha)) {
-        $_SESSION['user'] = $dados['id'];
-    } else {
-        $_SESSION['msg'] = "Usuário ou senha incorretos!!";
-        header("Location: login.php");
+        //instancia uma entidade usuário para conseguir realizar validação de senha e email
+        $user = null;
+        if ($dados != null) {
+            $dataDeNascimento = new DateTime($dados['dataNascimento']);
+            $user = new Usuario($dados['cpf'], $dados['nome'], $dataDeNascimento, $dados['email'], $dados['senha']);
+        }
+
+        //realiza validação de email e senha para o usuário conseguir navegar no site
+        if ($user != null && $user->validaUsuario($email, $senha)) {
+            $_SESSION['user'] = $user;
+
+            if (isset($_SESSION['pagina']) && isset($_SESSION['evento'])) {
+                header("Location: " . $_SESSION['pagina'] . "?id=" . $_SESSION['evento']);
+            }
+        } else {
+            $_SESSION['msg'] = "Usuário ou senha incorretos!!";
+            header("Location: LoginView.php");
+            exit;
+        }
+    } else if (!isset($_SESSION['user'])) {
+        $_SESSION['msg'] = "Necessário email e senha para fazer login";
+        header("Location: LoginView.php");
         exit;
     }
-} else if (!isset($_SESSION['user'])) {
-    $_SESSION['msg'] = "Necessário email e senha para fazer login";
-    header("Location: login.php");
-    exit;
 }
 ?>
 
@@ -117,33 +125,50 @@ if (!empty($_POST['email'])) {
 <body>
     <header>
         <div class="logo">
-            <a href="HomeView.php">
-                <img src="EventPassLogo.png" alt="EventPass Logo">
-            </a>
+            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Encontre seu evento">
-            <button>🔍</button>
+            <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+                <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+                <button type="submit">🔍</button>
+            </form>
         </div>
         <div class="login">
-            <a href="LoginView.php">
-                <button>Login</button>
-            </a>
+            <?php if (isset($_SESSION['user'])){
+                echo "<button onclick=\"window.location.href='Logout.php'\">Logout</button>";
+            } else {
+                echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
+            }?>
         </div>
     </header>
 
     <section class="eventos-principais">
         <div class="eventos-capas">
-            <button style="all: unset; cursor: pointer;" onclick="window.location.href='EventView.php'">
-                <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp"
-                    alt="Journey Tour 2022">
-            </button>
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTTRebUv9-cbgZaylYdXWoMlwXzKpeyqvP5lA&s"
-                alt="Foreigner Tour">
-            <img src="https://upload.wikimedia.org/wikipedia/pt/2/21/Bruno_Mars_-_Live_in_Brazil_-_Turnê.jpg"
-                alt="Bruno Mars Brasil">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyPKQ06CiGAY2MQGzwNy5KkBVjF-gkvJTx0w&s"
-                alt="Nickelback Tour">
+            <?php
+            $busca = isset($_GET['busca']) ? mysqli_real_escape_string($conexao, $_GET['busca']) : '';
+            if ($busca != '') {
+                $sql = "SELECT id, nome, logo FROM Eventos WHERE nome LIKE '%$busca%'";
+            } else {
+                $sql = "SELECT id, nome, logo FROM Eventos";
+            }
+            $result = mysqli_query($conexao, $sql);
+
+            if (mysqli_num_rows($result) > 0) {
+                while ($row = mysqli_fetch_assoc($result)) {
+                    $id = $row['id'];
+                    $nome = htmlspecialchars($row['nome']);
+                    $logo = $row['logo'];
+    
+                    echo "
+                    <button style=\"all: unset; cursor: pointer;\" onclick=\"window.location.href='EventView.php?id=$id'\">
+                        <img src=\"$logo\" alt=\"$nome\">
+                    </button>
+                    ";
+                }
+            } else {
+                echo "<p style='color: white;'>Nenhum evento encontrado para \"$busca\".</p>";
+            }
+            ?>
         </div>
     </section>
 

@@ -1,10 +1,38 @@
+<?php
+include_once '../../backend/DataBase/conexaoDB.php';
+session_start();
+
+if (isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $consulta = mysqli_query($conexao, "SELECT * FROM Eventos WHERE id = $id");
+    $dados = mysqli_fetch_assoc($consulta);
+
+    if ($dados) {
+        // Dados do evento
+        $nome = $dados['nome'];
+        $local = $dados['local_evento'];
+        $data = new DateTime($dados['data_evento']);
+        $preco = $dados['preco_ingresso'];
+        $precoMeia = $dados['preco_ingresso'] / 2;
+        $logo = $dados['logo'];
+    } else {
+        echo "<p>Evento não encontrado.</p>";
+        exit;
+    }
+} else {
+    echo "<p>ID do evento não fornecido.</p>";
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Freedom Tour 2025 - Journey & Toto</title>
+    <title><?php echo $nome; ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -96,6 +124,7 @@
             border-radius: 10px;
             text-align: center;
             box-sizing: border-box;
+            position: relative;
         }
 
         .ingresso-item {
@@ -143,55 +172,133 @@
             margin: 0 10px;
             font-size: 18px;
         }
+
+        #mensagemAlerta {
+            display: none;
+            background-color: #ffc107;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-left: 20px;
+            font-weight: bold;
+            position: absolute;
+            right: 5%;
+            top: 45%;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            opacity: 1;
+            transition: opacity 1s ease-in-out;
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="logo">
-            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
+            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
-            <input type="text" placeholder="Encontre seu evento">
-            <button>🔍</button>
+            <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+                <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+                <button type="submit">🔍</button>
+            </form>
         </div>
         <div class="login">
-            <a href="LoginView.html">
-            <button>Login</button>
-        </a>
+            <?php if (isset($_SESSION['user'])) {
+                echo "<button onclick=\"window.location.href='Logout.php'\">Logout</button>";
+            } else {
+                echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
+            } ?>
+        </div>
     </header>
 
     <div class="poster">
-        <img src="https://cdn.nsite.com.br/imgcache/494/1400x/uploads/494/journey%20e%20toto.jpg.webp" alt="banner-show"
-            class="banner">
-
+        <img src="<?php echo $logo; ?>" alt="banner-show" class="banner">
+            
         <div class="ingressos-container">
             <h2>INGRESSOS</h2>
-            <div class="ingresso-item">
-                <span>Pista (inteira)</span>
-                <span>R$ 400</span>
-                <div class="contador">
-                    <button>-</button>
-                    <span>0</span>
-                    <button>+</button>
+            <div id="mensagemAlerta" class="alert alert-danger text-center">Selecione pelo menos um ingresso!</div>
+            <form method="POST" action="PaymentView.php?id=<?php echo $id; ?>" id="formularioIngressos">
+                <div class="ingresso-item">
+                    <span>Pista (inteira)</span>
+                    <span>R$ <?php echo $preco ?></span>
+                    <div class="contador">
+                        <button type="button" class="decremento">-</button>
+                        <span class="qtdIngressos qtdInteira">0</span>
+                        <button type="button" class="incremento">+</button>
+                    </div>
+                    <input type="hidden" name="qtdInteira" id="inputQtdInteira" value="0" />
                 </div>
-            </div>
-            <div class="ingresso-item">
-                <span>Pista (meia)</span>
-                <span>R$ 200</span>
-                <div class="contador">
-                    <button>-</button>
-                    <span>0</span>
-                    <button>+</button>
+                <div class="ingresso-item">
+                    <span>Pista (meia)</span>
+                    <span>R$ <?php echo $precoMeia ?></span>
+                    <div class="contador">
+                        <button type="button" class="decremento">-</button>
+                        <span class="qtdIngressos qtdMeia">0</span>
+                        <button type="button" class="incremento">+</button>
+                    </div>
+                    <input type="hidden" name="qtdMeia" id="inputQtdMeia" value="0" />
                 </div>
-            </div>
-            <div class="btn-container">
-                <a href="PaymentView.html">
-                    <button class="btn">COMPRAR</button>
-                </a>
-            </div>
+                <div class="btn-container">
+                    <button type="button" class="btn" onclick="enviarQtdIngressos()">COMPRAR</button>
+                </div>
+            </form>
         </div>
     </div>
 </body>
+
+<script>
+    const ticketSelectors = document.querySelectorAll('.ingresso-item');
+
+    ticketSelectors.forEach(selector => {
+        const incrementoBtn = selector.querySelector('.incremento');
+        const decrementoBtn = selector.querySelector('.decremento');
+        const countDisplay = selector.querySelector('.qtdIngressos');
+
+        let count = parseInt(countDisplay.textContent);
+
+        //função de incremento
+        incrementoBtn.addEventListener('click', () => {
+            count++;
+            countDisplay.textContent = count;
+        });
+
+        //função de decremento
+        decrementoBtn.addEventListener('click', () => {
+            if (count > 0) {
+                count--;
+                countDisplay.textContent = count;
+            }
+        });
+    });
+
+    function enviarQtdIngressos() {
+        let inteira = parseInt(document.querySelector('.qtdInteira').textContent);
+        let meia = parseInt(document.querySelector('.qtdMeia').textContent);
+        const alerta = document.getElementById('mensagemAlerta');
+
+        //mensagem de alerta caso o usuário não tenha selecionado nenhum ingresso
+        if (inteira === 0 && meia === 0) {
+            alerta.textContent = "Selecione pelo menos um ingresso!";
+            alerta.style.display = "block";
+            alerta.style.opacity = "1";
+
+            setTimeout(() => {
+                alerta.style.opacity = "0";
+            }, 2000);
+
+            setTimeout(() => {
+                alerta.style.display = "none";
+            }, 3000);
+
+            return; // NÃO envia o formulário
+        }
+
+        document.getElementById('inputQtdInteira').value = inteira;
+        document.getElementById('inputQtdMeia').value = meia;
+
+        document.getElementById('formularioIngressos').submit();
+    }
+</script>
 
 </html>

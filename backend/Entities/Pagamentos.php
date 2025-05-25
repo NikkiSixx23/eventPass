@@ -5,14 +5,14 @@ class Pagamentos {
     private string $metodo_pagamento;
     private float $valor_total;
     private string $status_pagamento;
-    private string $data_pagamento; 
+    private DateTime $data_pagamento; 
 
     public function __construct(
         int $ingresso_id,
         string $metodo_pagamento,
         float $valor_total,
         string $status_pagamento,
-        string $data_pagamento
+        DateTime $data_pagamento
     ) {
         $this->ingresso_id = $ingresso_id;
         $this->metodo_pagamento = $metodo_pagamento;
@@ -41,7 +41,7 @@ class Pagamentos {
         return $this->status_pagamento;
     }
 
-    public function getDataPagamento(): string {
+    public function getDataPagamento(): DateTime {
         return $this->data_pagamento;
     }
 
@@ -57,7 +57,7 @@ class Pagamentos {
         $this->status_pagamento = $status_pagamento;
     }
 
-    public function setDataPagamento(string $data_pagamento): void {
+    public function setDataPagamento(DateTime $data_pagamento): void {
         $this->data_pagamento = $data_pagamento;
     }
 }
