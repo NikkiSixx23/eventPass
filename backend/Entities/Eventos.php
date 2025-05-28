@@ -3,7 +3,7 @@ class Eventos {
     private int $id;
     private string $nome;
     private string $descricao;
-    private string $data_evento;
+    private DateTime $data_evento;
     private string $local_evento;
     private int $capacidade_maxima;
     private float $preco_ingresso;
@@ -11,7 +11,7 @@ class Eventos {
     public function __construct(
         string $nome,
         string $descricao,
-        string $data_evento,
+        DateTime $data_evento,
         string $local_evento,
         int $capacidade_maxima,
         float $preco_ingresso
@@ -36,7 +36,7 @@ class Eventos {
         return $this->descricao;
     }
 
-    public function getDataEvento(): string {
+    public function getDataEvento(): DateTime {
         return $this->data_evento;
     }
 
@@ -60,7 +60,7 @@ class Eventos {
         $this->descricao = $descricao;
     }
 
-    public function setDataEvento(string $data_evento): void {
+    public function setDataEvento(DateTime $data_evento): void {
         $this->data_evento = $data_evento;
     }
 

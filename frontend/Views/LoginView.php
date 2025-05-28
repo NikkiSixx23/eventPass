@@ -1,0 +1,134 @@
+<?php
+session_start();
+?>
+
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPass Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #d6f0ff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .logo {
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 200px;
+        }
+
+        .container {
+            background-color: navy;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            width: 350px;
+        }
+
+        h2 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 10px;
+            border: none;
+        }
+
+        .btn {
+            width: 50%;
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .ou {
+            color: white;
+            margin: 15px 0;
+        }
+
+        label {
+            color: white;
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .cadastro {
+            color: #4a90e2;
+            text-decoration: none;
+        }
+
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .social-login img {
+            width: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo">
+        <img src="EventPassLogo.png" alt="EventPass Logo">
+    </div>
+
+    <?php if (isset($_SESSION['msg'])) { ?>
+        <div class="alert alert-danger text-center">
+            <?php echo $_SESSION['msg']; ?>
+        </div>
+    <?php session_destroy();
+    } ?>
+
+    <form action="HomeView.php" method="POST">
+        <div class="container">
+            <h2>ENTRE AGORA</h2>
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Digite seu email">
+            <label for="senha">Senha</label>
+            <input type="password" name="senha" placeholder="Digite sua senha">
+            <button class="btn">ENTRAR</button>
+            <p class="ou">OU</p>
+            <a href="RegisterView.php" class="cadastro">CADASTRE - SE</a>
+            <!--<p class="ou">Acesso rápido com</p>
+            <div class="social-login">
+                <img src="https://logopng.com.br/logos/google-37.png" alt="Google Login">
+                <img src="https://logopng.com.br/logos/facebook-13.png" alt="Facebook Login">
+            </div>-->
+        </div>
+    </form>
+</body>
+
+</html>
