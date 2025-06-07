@@ -1,5 +1,7 @@
 <?php
 include_once '../../backend/DataBase/conexaoDB.php';
+include_once '../../backend/Entities/Usuario.php';
+
 session_start();
 
 if (isset($_GET['id'])) {
@@ -49,7 +51,7 @@ if (isset($_GET['id'])) {
 
         body {
             background-color: navy;
-            color: white;
+            color: black;
             font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
@@ -67,12 +69,16 @@ if (isset($_GET['id'])) {
         }
 
         .logo img {
-            height: 150px;
+            height: 75px;
+        }
+
+        .engrenagem-opcoes {
+            height: 25px;
         }
 
         .search-bar {
             flex-grow: 1;
-            margin: 0 20px;
+            margin: 0 300px;
             display: flex;
         }
 
@@ -125,6 +131,7 @@ if (isset($_GET['id'])) {
             text-align: center;
             box-sizing: border-box;
             position: relative;
+            color: white;
         }
 
         .ingresso-item {
@@ -182,12 +189,41 @@ if (isset($_GET['id'])) {
             margin-left: 20px;
             font-weight: bold;
             position: absolute;
-            right: 5%;
-            top: 45%;
+            right: 23%;
+            /* -50% */
+            top: 65%;
+            /* 40% */
             z-index: 10;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
             opacity: 1;
             transition: opacity 1s ease-in-out;
+        }
+
+        .btn-container button:hover {
+            background-color: #00CFFF;
+            color: white;
+        }
+
+        .botao-voltar {
+            position: absolute;
+            top: 130px;
+            left: 15px;
+            z-index: 1000;
+        }
+
+        .botao-voltar button {
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .botao-voltar button:hover {
+            background-color: #00CFFF;
+            color: white;
         }
     </style>
 </head>
@@ -195,7 +231,7 @@ if (isset($_GET['id'])) {
 <body>
     <header>
         <div class="logo">
-            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
+            <img style="cursor: pointer;" src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
             <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
@@ -204,8 +240,33 @@ if (isset($_GET['id'])) {
             </form>
         </div>
         <div class="login">
-            <?php if (isset($_SESSION['user'])) {
-                echo "<button onclick=\"window.location.href='Logout.php'\">Logout</button>";
+            <?php
+            if (isset($_SESSION['user'])) {
+                $primeiroNome = $_SESSION['user']->pegarPrimeiroNome($_SESSION['user']->getNome());
+
+                if ($_SESSION['user']->getPerfil() != 'ADMINISTRADOR') {
+                    echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"#\">Action</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\">Logout</a></li>
+                            </ul>
+                    </div>";
+                } else {
+                    echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"GerenciarEventos.php\">Gerenciar eventos</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\" style=\"color: darkred;\">Logout</a></li>
+                            </ul>
+                    </div>";
+                }
             } else {
                 echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
             } ?>
@@ -214,7 +275,11 @@ if (isset($_GET['id'])) {
 
     <div class="poster">
         <img src="<?php echo $logo; ?>" alt="banner-show" class="banner">
-            
+
+        <div class="botao-voltar">
+            <button onclick="history.back()">← Voltar</button>
+        </div>
+
         <div class="ingressos-container">
             <h2>INGRESSOS</h2>
             <div id="mensagemAlerta" class="alert alert-danger text-center">Selecione pelo menos um ingresso!</div>
@@ -259,8 +324,10 @@ if (isset($_GET['id'])) {
 
         //função de incremento
         incrementoBtn.addEventListener('click', () => {
-            count++;
-            countDisplay.textContent = count;
+            if (count < 2) {
+                count++;
+                countDisplay.textContent = count;
+            }
         });
 
         //função de decremento
@@ -291,7 +358,7 @@ if (isset($_GET['id'])) {
                 alerta.style.display = "none";
             }, 3000);
 
-            return; // NÃO envia o formulário
+            return;
         }
 
         document.getElementById('inputQtdInteira').value = inteira;
@@ -300,5 +367,7 @@ if (isset($_GET['id'])) {
         document.getElementById('formularioIngressos').submit();
     }
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </html>

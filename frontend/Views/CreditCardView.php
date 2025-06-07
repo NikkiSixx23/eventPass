@@ -1,14 +1,23 @@
 <?php
+//importações
+include_once '../../backend/DataBase/conexaoDB.php';
+include_once '../../backend/Entities/Usuario.php';
+
 session_start();
+
+if (!isset($_SESSION['user'])) {
+  header("Location: LoginView.php");
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pagamento</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
     * {
       box-sizing: border-box;
@@ -41,7 +50,7 @@ session_start();
 
     .search-bar {
       flex-grow: 1;
-      margin: 0 20px;
+      margin: 0 300px;
       display: flex;
     }
 
@@ -76,7 +85,7 @@ session_start();
       text-align: center;
     }
 
-    .card{
+    .card {
       background-color: white;
       color: black;
       border-radius: 40px;
@@ -139,25 +148,80 @@ session_start();
     .finalizar-btn:hover {
       background-color: #4a90e2;
     }
+
+    .botao-voltar {
+      position: absolute;
+      top: 210px;
+      left: 15px;
+      z-index: 1000;
+    }
+
+    .botao-voltar button {
+      padding: 10px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .botao-voltar button:hover {
+      background-color: #00CFFF;
+      color: white;
+    }
   </style>
 </head>
+
 <body>
 
   <header>
     <div class="logo">
-      <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
-  </div>
+      <img style="cursor: pointer;" src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
+    </div>
     <div class="search-bar">
-            <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
-                <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
-                <button type="submit">🔍</button>
-            </form>
-        </div>
+      <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
+        <input type="text" name="busca" placeholder="Encontre seu evento" value="<?php echo isset($_GET['busca']) ? htmlspecialchars($_GET['busca']) : ''; ?>">
+        <button type="submit">🔍</button>
+      </form>
+    </div>
     <div class="login">
-      <a href="LoginView.html">
-      <button>Login</button>
-  </a>
+      <?php
+      if (isset($_SESSION['user'])) {
+        $primeiroNome = $_SESSION['user']->pegarPrimeiroNome($_SESSION['user']->getNome());
+
+        if ($_SESSION['user']->getPerfil() != 'ADMINISTRADOR') {
+          echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"#\">Action</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\">Logout</a></li>
+                            </ul>
+                    </div>";
+        } else {
+          echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"GerenciarEventos.php\">Gerenciar eventos</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\" style=\"color: darkred;\">Logout</a></li>
+                            </ul>
+                    </div>";
+        }
+      } else {
+        echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
+      } ?>
+    </div>
   </header>
+
+  <div class="botao-voltar">
+    <button onclick="history.back()">← Voltar</button>
+  </div>
 
   <h2>FORMA DE PAGAMENTO</h2>
 
@@ -189,4 +253,5 @@ session_start();
   </div>
 
 </body>
+
 </html>

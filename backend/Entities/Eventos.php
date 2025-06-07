@@ -4,6 +4,7 @@ class Eventos {
     private string $nome;
     private string $descricao;
     private DateTime $data_evento;
+    private DateTime $abertura;
     private string $local_evento;
     private int $capacidade_maxima;
     private float $preco_ingresso;
@@ -12,6 +13,7 @@ class Eventos {
         string $nome,
         string $descricao,
         DateTime $data_evento,
+        DateTime $abertura,
         string $local_evento,
         int $capacidade_maxima,
         float $preco_ingresso
@@ -19,6 +21,7 @@ class Eventos {
         $this->nome = $nome;
         $this->descricao = $descricao;
         $this->data_evento = $data_evento;
+        $this->abertura = $abertura;
         $this->local_evento = $local_evento;
         $this->capacidade_maxima = $capacidade_maxima;
         $this->preco_ingresso = $preco_ingresso;
@@ -38,6 +41,10 @@ class Eventos {
 
     public function getDataEvento(): DateTime {
         return $this->data_evento;
+    }
+
+    public function getAbertura(): DateTime {
+        return $this->abertura;
     }
 
     public function getLocalEvento(): string {
@@ -62,6 +69,10 @@ class Eventos {
 
     public function setDataEvento(DateTime $data_evento): void {
         $this->data_evento = $data_evento;
+    }
+
+    public function setAbertura(DateTime $abertura): void {
+        $this->abertura = $abertura;
     }
 
     public function setLocalEvento(string $local_evento): void {

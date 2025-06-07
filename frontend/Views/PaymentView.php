@@ -18,7 +18,8 @@ if (isset($_GET['id'])) {
         //passa para a sessão a página e o evento que o usuário estava acessando.
         $_SESSION['pagina'] = "PaymentView.php";
         $_SESSION['evento'] = $id;
-        header("Location: LoginView.php");
+        echo "filho da puta";
+        //header("Location: LoginView.php");
         exit;
     } else if (isset($_SESSION['qtdInteira']) && isset($_SESSION['qtdMeia'])) {
 
@@ -39,6 +40,11 @@ if (isset($_GET['id'])) {
             $precoMeia = $dados['preco_ingresso'] / 2;
             $logo = $dados['logo'];
             $total = ($_SESSION['qtdInteira'] * $preco) + ($_SESSION['qtdMeia'] * $precoMeia);
+            $classificacao = $dados['classificacao'];
+
+            if ($classificacao > $_SESSION['user']->calculoDaIdade($_SESSION['user']->getDataNascimento())) {
+                header("Location: EventView.php?id=" . $_SESSION['evento']);
+            }
         } else {
             echo "<p>Evento não encontrado.</p>";
             exit;
@@ -47,6 +53,9 @@ if (isset($_GET['id'])) {
         echo "<p>Não foi passado corretamente os ingressos.</p>";
         exit;
     }
+} else if (!isset($_SESSION['user'])) {
+    header("Location: LoginView.php");
+    exit;
 } else {
     echo "<p>ID do evento não fornecido.</p>";
     exit;
@@ -60,6 +69,7 @@ if (isset($_GET['id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagamento</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
@@ -68,7 +78,7 @@ if (isset($_GET['id'])) {
 
         body {
             background-color: navy;
-            color: white;
+            color: black;
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
@@ -88,12 +98,16 @@ if (isset($_GET['id'])) {
         }
 
         .logo img {
-            height: 150px;
+            height: 75px;
+        }
+
+        .engrenagem-opcoes {
+            height: 25px;
         }
 
         .search-bar {
             flex-grow: 1;
-            margin: 0 20px;
+            margin: 0 300px;
             display: flex;
         }
 
@@ -173,13 +187,35 @@ if (isset($_GET['id'])) {
             font-size: 14px;
             cursor: pointer;
         }
+
+        .botao-voltar {
+            position: absolute;
+            top: 130px;
+            left: 15px;
+            z-index: 1000;
+        }
+
+        .botao-voltar button {
+            padding: 10px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .botao-voltar button:hover {
+            background-color: #00CFFF;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
     <header>
         <div class="logo">
-            <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
+            <img style="cursor: pointer;" src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
         </div>
         <div class="search-bar">
             <form action="HomeView.php" method="GET" style="display: flex; width: 100%;">
@@ -188,16 +224,48 @@ if (isset($_GET['id'])) {
             </form>
         </div>
         <div class="login">
-            <button onclick="window.location.href='Logout.php'">Logout</button>
+            <?php
+            if (isset($_SESSION['user'])) {
+                $primeiroNome = $_SESSION['user']->pegarPrimeiroNome($_SESSION['user']->getNome());
+
+                if ($_SESSION['user']->getPerfil() != 'ADMINISTRADOR') {
+                    echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"#\">Action</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\">Logout</a></li>
+                            </ul>
+                    </div>";
+                } else {
+                    echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"GerenciarEventos.php\">Gerenciar eventos</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\" style=\"color: darkred;\">Logout</a></li>
+                            </ul>
+                    </div>";
+                }
+            } else {
+                echo "<button onclick=\"window.location.href='LoginView.php'\">Login</button>";
+            } ?>
         </div>
     </header>
-    <h2>PAGAMENTO</h2>
+    <div class="botao-voltar">
+        <button onclick="history.back()">← Voltar</button>
+    </div>
+    <h2 style="color: white;">PAGAMENTO</h2>
     <div class="container">
         <div class="evento">
             <img src="<?php echo $logo; ?>" alt="Capa do evento">
             <div>
                 <p><strong><?php echo $nome; ?></strong></p>
-                <p>📍 <!--coloque aqui onde será o evento--><br><?php echo $local . ", " . $data->format("d/m/Y"); ?></p>
+                <p>📍 <!--coloque aqui onde será o evento--><?php echo $local . ", " . $data->format("d/m/Y"); ?></p>
             </div>
         </div>
         <div class="resumo">
@@ -210,5 +278,7 @@ if (isset($_GET['id'])) {
         <button class="btn-comprar" onclick="window.location.href='PaymentMethod.php'">COMPRAR</button>
     </div>
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </html>

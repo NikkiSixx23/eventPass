@@ -21,6 +21,28 @@
             $this->endereco = $endereco;
         }
 
+        function formatarCpfMascara($cpf) {
+            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf);
+        }
+
+        public function formatarTelefoneMascara($telefone) {
+            return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $telefone);
+        }
+
+
+        public function pegarPrimeiroNome(String $nome) {
+                $nome = trim($nome);
+                $nomeDividido = explode(" ", $nome);
+                $primeiroNome = $nomeDividido[0];
+                return $primeiroNome;
+        }
+
+        public function calculoDaIdade(DateTime $dataDeNascimento) {
+            $hoje = new DateTime();
+            $idade = $dataDeNascimento->diff($hoje)->y;
+            return $idade;
+        }
+
         public function validaUsuario($email, $senha) {
             if ($email == $this->email && $senha == $this->senha) {
                 return true;
@@ -31,6 +53,10 @@
 
         public function getId(): int {
             return $this->id;
+        }
+
+        public function setId($id) {
+            $this->$id = $id;
         }
 
         public function getCpf(): String {

@@ -22,6 +22,16 @@ function validarCPF($cpf) {
     return true;
 }
 
+function validarNome() {
+    // Quebra apenas por espaço em branco
+    $palavras = preg_split('/\s+/', trim($_POST['nome']));
+
+    // Remove entradas vazias
+    $palavras = array_filter($palavras);
+
+    return count($palavras);
+}
+
 $erros = [];
 $msg = '';
 
@@ -31,11 +41,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else if (!validarCPF($_POST['cpf'])) {
         $erros['cpf'] = "CPF inválido.";
     };
-    if (empty($_POST['nome'])) $erros['nome'] = "Nome é obrigatório.";
-    if (empty($_POST['dataNasc'])) $erros['dataNasc'] = "Data de nascimento é obrigatória.";
-    if (empty($_POST['email'])) $erros['email'] = "Email é obrigatório.";
-    if (empty($_POST['senha'])) $erros['senha'] = "Senha é obrigatória.";
-    if (empty($_POST['confirmarSenha'])) $erros['confirmarSenha'] = "Confirmação de senha é obrigatória.";
+    if (empty($_POST['nome'])) {
+        $erros['nome'] = "Nome é obrigatório";
+    } else if (validarNome() < 2) {
+        $erros['nome'] = "Necessário nome completo";
+    }
+    if (empty($_POST['dataNasc'])) {
+        $erros['dataNasc'] = "Data de nascimento é obrigatória.";
+    }
+    if (empty($_POST['email'])) {
+        $erros['email'] = "Email é obrigatório.";
+    }
+    if (empty($_POST['senha'])) {
+        $erros['senha'] = "Senha é obrigatória.";
+    }
+    if (empty($_POST['confirmarSenha'])) {
+        $erros['confirmarSenha'] = "Confirmação de senha é obrigatória.";
+    }
 
     if (!isset($erros['senha']) && !isset($erros['confirmarSenha']) && $_POST['senha'] !== $_POST['confirmarSenha']) {
         $erros['confirmarSenha'] = "As senhas não coincidem.";
@@ -68,162 +90,136 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EventPass Cadastro</title>
+
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
 
         body {
             background-color: #d6f0ff;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: start;
             align-items: center;
-            height: 100vh;
-        }
-
-        .logo {
-            margin-bottom: 20px;
+            padding-top: 30px;
         }
 
         .logo img {
             width: 200px;
         }
 
-        .container {
+        .form-container {
             background-color: navy;
             padding: 30px;
             border-radius: 15px;
-            text-align: center;
-            width: 380px;
+            color: white;
+            max-width: 100%;
         }
 
         h2 {
             color: white;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         label {
-            color: white;
-            display: block;
-            text-align: left;
             margin-top: 10px;
             font-size: 14px;
         }
 
         input {
-            width: 100%;
-            padding: 10px;
             margin-top: 5px;
-            border-radius: 10px;
-            border: none;
+            border-radius: 10px !important;
         }
 
         .btn {
-            width: 50%;
-            padding: 10px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
+            width: 100%;
             margin-top: 20px;
+            background-color: #4a90e2;
+            border: none;
+        }
+
+        .btn:hover {
+            background-color: #357ab8;
         }
 
         .cadastro {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
             color: #4a90e2;
             text-decoration: none;
-        }
-    </style>
-
-    <!--ESTILO PARA MENSAGEM DE ALERTA-->
-    <style>
-        .alert {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
         }
 
         .field-error {
             color: #ffb3b3;
             font-size: 13px;
             margin-top: 3px;
-            text-align: left;
         }
     </style>
 </head>
 
 <body>
-    <div class="logo">
+    <div class="logo mb-3">
         <img src="EventPassLogo.png" alt="EventPass Logo">
     </div>
-    <form method='POST' action='RegisterView.php'>
-        <div class="container">
-            <h2>CADASTRO</h2>
-            <label for="nome">Nome</label>
-            <input type="text" name="nome" id="nome" placeholder="Digite seu nome completo" value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>">
-            <?php if (isset($erros['nome'])) echo "<div class='field-error'>{$erros['nome']}</div>"; ?>
 
-            <label for="cpf">CPF</label>
-            <input type="text" name="cpf" id="cpf" placeholder="Digite seu CPF" value="<?php echo htmlspecialchars($_POST['cpf'] ?? ''); ?>">
-            <?php if (isset($erros['cpf'])) echo "<div class='field-error'>{$erros['cpf']}</div>"; ?>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+                <form method='POST' action='RegisterView.php' class="form-container">
+                    <h2>CADASTRO</h2>
 
-            <label for="dataNasc">Data de nascimento</label>
-            <input type="date" name="dataNasc" id="dataNasc" placeholder="Digite sua data de nascimento" value="<?php echo htmlspecialchars($_POST['dataNasc'] ?? ''); ?>">
-            <?php if (isset($erros['dataNasc'])) echo "<div class='field-error'>{$erros['dataNasc']}</div>"; ?>
+                    <label for="nome">Nome completo</label>
+                    <input type="text" name="nome" id="nome" class="form-control" value="<?php echo htmlspecialchars($_POST['nome'] ?? ''); ?>" placeholder="Digite seu nome completo">
+                    <?php if (isset($erros['nome'])) echo "<div class='field-error'>{$erros['nome']}</div>"; ?>
 
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="Digite seu email" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>">
-            <?php if (isset($erros['email'])) echo "<div class='field-error'>{$erros['email']}</div>"; ?>
+                    <label for="cpf">CPF</label>
+                    <input type="text" name="cpf" id="cpf" class="form-control" value="<?php echo htmlspecialchars($_POST['cpf'] ?? ''); ?>" placeholder="Digite seu CPF">
+                    <?php if (isset($erros['cpf'])) echo "<div class='field-error'>{$erros['cpf']}</div>"; ?>
 
-            <label for="senha">Senha</label>
-            <input type="password" name="senha" id="senha" placeholder="Digite sua senha">
-            <?php if (isset($erros['senha'])) echo "<div class='field-error'>{$erros['senha']}</div>"; ?>
+                    <label for="dataNasc">Data de nascimento</label>
+                    <input type="date" name="dataNasc" id="dataNasc" class="form-control" value="<?php echo htmlspecialchars($_POST['dataNasc'] ?? ''); ?>">
+                    <?php if (isset($erros['dataNasc'])) echo "<div class='field-error'>{$erros['dataNasc']}</div>"; ?>
 
-            <label for="confirmarSenha">Confirmar Senha</label>
-            <input type="password" name="confirmarSenha" id="confirmarSenha" placeholder="Confirme sua senha">
-            <?php if (isset($erros['confirmarSenha'])) echo "<div class='field-error'>{$erros['confirmarSenha']}</div>"; ?>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="Digite seu email">
+                    <?php if (isset($erros['email'])) echo "<div class='field-error'>{$erros['email']}</div>"; ?>
 
-            <button class="btn">CADASTRAR</button>
-            <a href="LoginView.php" class="cadastro">Já tenho cadastro</a>
+                    <label for="senha">Senha</label>
+                    <input type="password" name="senha" id="senha" class="form-control" placeholder="Digite sua senha">
+                    <?php if (isset($erros['senha'])) echo "<div class='field-error'>{$erros['senha']}</div>"; ?>
+
+                    <label for="confirmarSenha">Confirmar Senha</label>
+                    <input type="password" name="confirmarSenha" id="confirmarSenha" class="form-control" placeholder="Confirme sua senha">
+                    <?php if (isset($erros['confirmarSenha'])) echo "<div class='field-error'>{$erros['confirmarSenha']}</div>"; ?>
+
+                    <button type="submit" class="btn btn-primary">CADASTRAR</button>
+                    <a href="LoginView.php" class="cadastro">Já tenho cadastro</a>
+                </form>
+            </div>
         </div>
-    </form>
-</body>
+    </div>
 
-<!--Mascara do CPF -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const cpfInput = document.getElementById('cpf');
-
-        cpfInput.addEventListener('input', function (e) {
-            let value = cpfInput.value.replace(/\D/g, '');
-
-            if (value.length > 11) value = value.slice(0, 11);
-
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-
-            cpfInput.value = value;
+    <!--Máscara do CPF-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cpfInput = document.getElementById('cpf');
+            cpfInput.addEventListener('input', function() {
+                let value = cpfInput.value.replace(/\D/g, '');
+                if (value.length > 11) value = value.slice(0, 11);
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                cpfInput.value = value;
+            });
         });
-    });
-</script>
-
-</html>
+    </script>
+</body>

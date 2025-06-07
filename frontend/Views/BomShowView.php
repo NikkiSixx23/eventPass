@@ -1,5 +1,18 @@
+<?php
+//importações
+include_once '../../backend/DataBase/conexaoDB.php';
+include_once '../../backend/Entities/Usuario.php';
+
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: LoginView.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>BOM SHOW!</title>
@@ -11,7 +24,8 @@
       padding: 0;
     }
 
-    body, html {
+    body,
+    html {
       height: 100%;
       width: 100%;
       font-family: 'Pacifico', cursive;
@@ -36,16 +50,17 @@
       color: white;
       font-size: 64px;
       text-align: center;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
     }
   </style>
 </head>
+
 <body>
 
   <header>
     <div class="logo">
-      <img src="EventPassLogo.png" onclick="window.location.href='HomeView.html'" alt="EventPass Logo">
-  </div>
+      <img style="cursor: pointer;" src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
+    </div>
   </header>
 
   <div class="hero">
@@ -53,4 +68,5 @@
   </div>
 
 </body>
+
 </html>
