@@ -144,7 +144,7 @@ if (!isset($_SESSION['user'])) {
         <img src="EventPassLogo.png" onclick="window.location.href='HomeView.php'" alt="EventPass Logo">
     </div>
 
-    <form method="POST" action="SalvarEvento.php?id=<?php echo $idEvento;?>" enctype="multipart/form-data">
+    <form method="POST" action="UpdateEventos.php?id=<?php echo $idEvento;?>" enctype="multipart/form-data">
         <div class="container">
             <?php if ($editar): ?>
                 <h2>EDITAR EVENTO</h2>
@@ -190,7 +190,7 @@ if (!isset($_SESSION['user'])) {
                 <div class="capa">
                     <label for="capa">Inserir Capa</label>
                     <input type="file" name="capa" id="capa">
-                    <input type="hidden" name="logoAntiga" id="logoAntiga" value="<?php echo htmlspecialchars($dados['logo']); ?>">
+                    <input type="hidden" name="logoAntiga" id="logoAntiga" value="<?php echo base64_encode($dados['logo']); ?>">
                 </div>
 
                 <input type="hidden" name="editar" value="editar">

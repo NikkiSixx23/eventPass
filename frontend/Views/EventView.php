@@ -1,6 +1,8 @@
 <?php
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
+include_once '../../backend/Entities/Eventos.php';
+
 session_start();
 
 if (isset($_GET['id'])) {
@@ -14,8 +16,10 @@ if (isset($_GET['id'])) {
         $local = $dados['local_evento'];
         $data = new DateTime($dados['data_evento']);
         $abertura = new DateTime($dados['abertura']);
-        $logo = $dados['logo'];
         $classificacao = $dados['classificacao'];
+        $logo = $dados['logo'];
+        $extensao = Eventos::pegarExtensaoDaImagem($dados['logo']);
+        $logo = base64_encode($logo);
     } else {
         echo "<p>Evento não encontrado.</p>";
         exit;
@@ -261,7 +265,7 @@ if (isset($_GET['id'])) {
     <div class="banner-container">
         <!--<img src="<?php //echo $banner; 
                         ?>" alt="background-show" class="banner-background">-->
-        <img src="<?php echo $logo; ?>" alt="banner-show" class="banner-overlay">
+        <img src="<?php echo "data:$extensao;base64,$logo"?>" alt="banner-show" class="banner-overlay">
     </div>
 
     <div class="botao-voltar">
@@ -272,7 +276,8 @@ if (isset($_GET['id'])) {
 
         <!--Nesta div é exibida as informações do evento-->
         <div class="info">
-            <h2><?php //echo htmlspecialchars($cidade); ?></h2>
+            <h2><?php //echo htmlspecialchars($cidade); 
+                ?></h2>
             <p><strong>Apresentação:</strong> <?php echo $data->format("d/m/Y"); ?> às <?php echo $data->format("H:i") ?></p>
             <p><strong>Abertura dos portões:</strong> <?php echo $abertura->format("H:i"); ?></p>
             <p><strong>Local:</strong> <?php echo htmlspecialchars($local); ?></p>

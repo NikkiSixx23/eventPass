@@ -2,6 +2,7 @@
 //importações
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
+include_once '../../backend/Entities/Eventos.php';
 
 session_start();
 
@@ -37,8 +38,10 @@ if (isset($_GET['id'])) {
             $local = $dados['local_evento'];
             $data = new DateTime($dados['data_evento']);
             $preco = $dados['preco_ingresso'];
-            $precoMeia = $dados['preco_ingresso'] / 2;
+            $precoMeia = $dados['preco_ingresso']/2;
             $logo = $dados['logo'];
+            $extensao = Eventos::pegarExtensaoDaImagem($dados['logo']);
+            $logo = base64_encode($logo);
             $total = ($_SESSION['qtdInteira'] * $preco) + ($_SESSION['qtdMeia'] * $precoMeia);
             $classificacao = $dados['classificacao'];
 
@@ -262,7 +265,7 @@ if (isset($_GET['id'])) {
     <h2 style="color: white;">PAGAMENTO</h2>
     <div class="container">
         <div class="evento">
-            <img src="<?php echo $logo; ?>" alt="Capa do evento">
+            <img src="<?php echo "data:$extensao;base64,$logo"?>" alt="Capa do evento">
             <div>
                 <p><strong><?php echo $nome; ?></strong></p>
                 <p>📍 <!--coloque aqui onde será o evento--><?php echo $local . ", " . $data->format("d/m/Y"); ?></p>

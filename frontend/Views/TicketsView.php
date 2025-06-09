@@ -1,6 +1,7 @@
 <?php
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
+include_once '../../backend/Entities/Eventos.php';
 
 session_start();
 
@@ -17,6 +18,8 @@ if (isset($_GET['id'])) {
         $preco = $dados['preco_ingresso'];
         $precoMeia = $dados['preco_ingresso'] / 2;
         $logo = $dados['logo'];
+        $extensao = Eventos::pegarExtensaoDaImagem($dados['logo']);
+        $logo = base64_encode($logo);
     } else {
         echo "<p>Evento não encontrado.</p>";
         exit;
@@ -274,7 +277,7 @@ if (isset($_GET['id'])) {
     </header>
 
     <div class="poster">
-        <img src="<?php echo $logo; ?>" alt="banner-show" class="banner">
+        <img src="<?php echo "data:$extensao;base64,$logo"?>" alt="banner-show" class="banner">
 
         <div class="botao-voltar">
             <button onclick="history.back()">← Voltar</button>

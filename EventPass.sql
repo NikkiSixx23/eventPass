@@ -11,7 +11,7 @@ create table Eventos (
     local_evento varchar(255) not null,
     capacidade_maxima int not null,
     preco_ingresso decimal(10, 2) not null,
-    logo blob not null,
+    logo longblob not null,
     classificacao ENUM('LIVRE', '10', '12', '14', '16', '18') not null
 );
 

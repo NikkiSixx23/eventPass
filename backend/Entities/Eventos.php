@@ -27,6 +27,11 @@ class Eventos {
         $this->preco_ingresso = $preco_ingresso;
     }
 
+    public static function pegarExtensaoDaImagem($imagem) {
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
+        return $finfo->buffer($imagem);
+    }
+
     public function getId(): int {
         return $this->id;
     }

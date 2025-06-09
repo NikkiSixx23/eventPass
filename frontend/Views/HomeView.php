@@ -2,6 +2,7 @@
 //importações
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
+include_once '../../backend/Entities/Eventos.php';
 
 session_start();
 
@@ -190,10 +191,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST)) {
                     $id = $row['id'];
                     $nome = htmlspecialchars($row['nome']);
                     $logo = $row['logo'];
+                    $extensao = Eventos::pegarExtensaoDaImagem($row['logo']);
+                    $logo = base64_encode($logo);
 
                     echo "
                     <button style=\"all: unset; cursor: pointer;\" onclick=\"window.location.href='EventView.php?id=$id'\">
-                        <img src=\"$logo\" alt=\"$nome\">
+                        <img src=\"data:$extensao;base64,$logo\" alt=\"$nome\">
                     </button>
                     ";
                 }

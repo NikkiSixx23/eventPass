@@ -1,6 +1,7 @@
 <?php
 include_once '../../backend/DataBase/conexaoDB.php';
 include_once '../../backend/Entities/Usuario.php';
+include_once '../../backend/Entities/Eventos.php';
 
 session_start();
 
@@ -47,6 +48,10 @@ if (!isset($_SESSION['user'])) {
 
         .logo img {
             height: 75px;
+        }
+
+        .engrenagem-opcoes {
+            height: 25px;
         }
 
         .search-bar {
@@ -139,7 +144,36 @@ if (!isset($_SESSION['user'])) {
             <button>🔍</button>
         </div>
         <div class="login">
-            <button>Entrar</button>
+            <div class="login">
+                <?php
+                if (isset($_SESSION['user'])) {
+                    $primeiroNome = $_SESSION['user']->pegarPrimeiroNome($_SESSION['user']->getNome());
+
+                    if ($_SESSION['user']->getPerfil() != 'ADMINISTRADOR') {
+                        echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"#\">Action</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\">Logout</a></li>
+                            </ul>
+                    </div>";
+                    } else {
+                        echo "<div class=\"d-flex align-items-center\">
+                        <span class=\"navbar-text me-3\">Bem vindo, " . $primeiroNome . "!</span>
+                        <a class=\"nav-link dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-expanded=\"false\"><img class=\"engrenagem-opcoes\" src=\"engrenagem.png\" alt=\"felladaputa\"/></a>
+                            <ul class=\"dropdown-menu dropdown-menu-end\">
+                                <li><a class=\"dropdown-item\" href=\"GerenciarEventos.php\">Gerenciar eventos</a></li>
+                                <li><a class=\"dropdown-item\" href=\"EditarUsuario.php\">Editar Perfil</a></li>
+                                <li><hr class=\"dropdown-divider\"></li>
+                                <li><a class=\"dropdown-item\" href=\"Logout.php\" style=\"color: darkred;\">Logout</a></li>
+                            </ul>
+                    </div>";
+                    }
+                } ?>
+            </div>
         </div>
     </header>
 
@@ -157,12 +191,14 @@ if (!isset($_SESSION['user'])) {
                 echo '<tbody>';
 
                 while ($row = mysqli_fetch_assoc($result)) {
-                    $idEvento = $row['id'];
+                    $idEvento = intval($row['id']);
                     $nome = htmlspecialchars($row['nome']);
                     $logo = $row['logo'];
+                    $extensao = Eventos::pegarExtensaoDaImagem($row['logo']);
+                    $logo = base64_encode($logo);
 
                     echo '<tr>';
-                    echo "<td><img src=\"$logo\" alt=\"$nome\" class=\"table-img\"></td>";
+                    echo "<td><img src=\"data:$extensao;base64,$logo\" alt=\"$nome\" class=\"table-img\"></td>";
                     echo "<td>$nome</td>";
                     echo '<td>
                             <button class="btn btn-sm btn-edit me-2" onclick="window.location.href=\'InserirEvento.php?id=' . $idEvento . '\'">EDITAR</button>
@@ -192,7 +228,10 @@ if (!isset($_SESSION['user'])) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button id="btnConfirmDelete" type="button" class="btn btn-danger">Confirmar</button>
+                    <form method="POST" id="formExcluir">
+                        <button id="btnConfirmDelete" type="submit" class="btn btn-danger">Confirmar</button>
+                        <input type="hidden" name="excluir" value="excluir">
+                    </form>
                 </div>
             </div>
         </div>
@@ -209,7 +248,7 @@ if (!isset($_SESSION['user'])) {
         // Atualiza o destino do botão de confirmação com o ID correto
         deleteButtons.forEach(button => {
             button.addEventListener("click", function() {
-                const eventoId = this.getAttribute("data-id");
+                const idEvento = this.getAttribute("data-id");
                 confirmBtn.onclick = function() {
                     // Fecha a modal
                     const modalEl = document.getElementById('confirmDeleteModal');
@@ -217,7 +256,9 @@ if (!isset($_SESSION['user'])) {
                     modal.hide();
 
                     // Redireciona para a exclusão
-                    window.location.href = `ExcluirEvento.php?id=${eventoId}`;
+                    const formExcluir = document.getElementById("formExcluir");
+                    formExcluir.action = `UpdateEventos.php?id=${idEvento}`;
+
                 };
             });
         });
